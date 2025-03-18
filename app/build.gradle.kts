@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    // Kotlin serialization
+    id("org.jetbrains.kotlin.plugin.serialization")
 }
 
 android {
@@ -63,4 +65,8 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.coil)
+
+    // kotlin serialization
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.accompanist.permissions)
 }
