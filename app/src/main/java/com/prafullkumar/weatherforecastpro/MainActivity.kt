@@ -1,18 +1,31 @@
 package com.prafullkumar.weatherforecastpro
 
-import android.Manifest
-import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,14 +36,19 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.google.accompanist.permissions.*
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
+import com.google.accompanist.permissions.shouldShowRationale
+import com.prafullkumar.weatherforecastpro.app.DetailedWeatherScreen
+import com.prafullkumar.weatherforecastpro.app.HomeWeatherViewModel
 import com.prafullkumar.weatherforecastpro.ui.theme.WeatherForecastProTheme
+import org.koin.androidx.compose.koinViewModel
 
 class MainActivity : ComponentActivity() {
     private val LOCATION_PERMISSION_REQUEST_CODE = 1
@@ -115,19 +133,22 @@ fun LocationPermissionScreen() {
 @Composable
 fun App() {
     val navController = rememberNavController()
+    val viewModels = rememberSaveable {
+        mutableMapOf<Any, ViewModel>()
+    }
     NavHost(
         navController,
         startDestination = Routes.DetailedWeather,
         modifier = Modifier.fillMaxSize()
     ) {
         composable<Routes.DetailedWeather> {
-            MainScreen(navController, Routes.DetailedWeather)
+            MainScreen(navController, Routes.DetailedWeather, viewModels)
         }
         composable<Routes.LocationSearch> {
-            MainScreen(navController, Routes.LocationSearch)
+            MainScreen(navController, Routes.LocationSearch, viewModels)
         }
         composable<Routes.SettingsScreen> {
-            MainScreen(navController, Routes.SettingsScreen)
+            MainScreen(navController, Routes.SettingsScreen, viewModels)
         }
     }
 }
@@ -135,7 +156,8 @@ fun App() {
 @Composable
 fun MainScreen(
     navController: NavController,
-    currentRoute: Routes
+    currentRoute: Routes,
+    viewModels: MutableMap<Any, ViewModel>
 ) {
     Scaffold(Modifier.fillMaxSize(), bottomBar = {
         BottomNavigationBar(currentRoute) {
@@ -143,7 +165,17 @@ fun MainScreen(
         }
     }) { innerPadding ->
         when (currentRoute) {
-            Routes.DetailedWeather -> DetailedWeatherScreen(innerPadding)
+            Routes.DetailedWeather -> {
+                viewModels.putIfAbsent(
+                    Routes.DetailedWeather,
+                    koinViewModel<HomeWeatherViewModel>()
+                )
+                DetailedWeatherScreen(
+                    viewModels[Routes.DetailedWeather] as HomeWeatherViewModel,
+                    innerPadding
+                )
+            }
+
             Routes.LocationSearch -> LocationSearchScreen(innerPadding)
             Routes.SettingsScreen -> SettingsScreen(innerPadding)
             Routes.Splash -> {
