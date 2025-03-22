@@ -1,4 +1,4 @@
-package com.prafullkumar.weatherforecastpro.app
+package com.prafullkumar.weatherforecastpro.app.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -293,13 +293,13 @@ private fun WeatherScreen(weatherResponse: WeatherResponse) {
             ) {
                 // Take 5 forecast items (each representing a 3-hour period)
                 items(weatherResponse.list) { hourlyData ->
-                    val time = SimpleDateFormat("HH:mm", Locale.getDefault())
-                        .format(Date(hourlyData.dt.toLong() * 1000))
+                    val time = SimpleDateFormat("h:mm a", Locale.getDefault())
+                    .format(Date(hourlyData.dt.toLong() * 1000))
                     val temp = "${hourlyData.main.temp?.let { (it - 273.15).toInt() }}°"
                     val iconRes = getWeatherIconResource(hourlyData.weather.firstOrNull()?.icon)
 
                     TimeLabel(
-                        time24 = time,
+                        time = time,
                         temp = temp,
                         iconResId = iconRes
                     )
@@ -350,14 +350,13 @@ fun WeatherParameterCard(
         }
     }
 }
+
 @Composable
 fun TimeLabel(
-    time24: String,
+    time: String,
     temp: String,
     iconResId: Int
 ) {
-    val time = SimpleDateFormat("h:mm a", Locale.getDefault())
-        .format(Date(time24.toLong() * 1000))
     Card(
         modifier = Modifier
             .width(80.dp)

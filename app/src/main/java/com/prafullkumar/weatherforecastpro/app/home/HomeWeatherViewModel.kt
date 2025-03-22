@@ -1,4 +1,4 @@
-package com.prafullkumar.weatherforecastpro.app
+package com.prafullkumar.weatherforecastpro.app.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.koin.androidx.compose.get
 
 class HomeWeatherViewModel(private val repository: WeatherRepository) : ViewModel() {
 

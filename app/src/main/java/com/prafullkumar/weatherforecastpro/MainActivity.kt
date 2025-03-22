@@ -45,8 +45,10 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
-import com.prafullkumar.weatherforecastpro.app.DetailedWeatherScreen
-import com.prafullkumar.weatherforecastpro.app.HomeWeatherViewModel
+import com.prafullkumar.weatherforecastpro.app.explore.ExploreScreen
+import com.prafullkumar.weatherforecastpro.app.explore.ExploreViewModel
+import com.prafullkumar.weatherforecastpro.app.home.DetailedWeatherScreen
+import com.prafullkumar.weatherforecastpro.app.home.HomeWeatherViewModel
 import com.prafullkumar.weatherforecastpro.ui.theme.WeatherForecastProTheme
 import org.koin.androidx.compose.koinViewModel
 
@@ -138,7 +140,7 @@ fun App() {
     }
     NavHost(
         navController,
-        startDestination = Routes.DetailedWeather,
+        startDestination = Routes.LocationSearch,
         modifier = Modifier.fillMaxSize()
     ) {
         composable<Routes.DetailedWeather> {
@@ -176,7 +178,16 @@ fun MainScreen(
                 )
             }
 
-            Routes.LocationSearch -> LocationSearchScreen(innerPadding)
+            Routes.LocationSearch -> {
+                viewModels.putIfAbsent(
+                    Routes.LocationSearch,
+                    koinViewModel<ExploreViewModel>()
+                )
+                ExploreScreen(
+                    viewModels[Routes.LocationSearch] as ExploreViewModel,
+                    navController
+                )
+            }
             Routes.SettingsScreen -> SettingsScreen(innerPadding)
             Routes.Splash -> {
 
@@ -190,10 +201,6 @@ fun SettingsScreen(padding: PaddingValues) {
 
 }
 
-@Composable
-fun LocationSearchScreen(padding: PaddingValues) {
-
-}
 
 
 @Composable

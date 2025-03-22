@@ -1,9 +1,14 @@
 package com.prafullkumar.weatherforecastpro
 
 import android.app.Application
-import com.prafullkumar.weatherforecastpro.app.HomeWeatherViewModel
+import androidx.room.Room
+import com.prafullkumar.weatherforecastpro.app.explore.ExploreViewModel
+import com.prafullkumar.weatherforecastpro.app.explore.data.local.ExploreDao
+import com.prafullkumar.weatherforecastpro.app.explore.data.local.ExploreDatabase
+import com.prafullkumar.weatherforecastpro.app.explore.exploreModule
+import com.prafullkumar.weatherforecastpro.app.home.HomeWeatherViewModel
+import com.prafullkumar.weatherforecastpro.app.home.WeatherRepositoryImpl
 import com.prafullkumar.weatherforecastpro.data.WeatherApiService
-import com.prafullkumar.weatherforecastpro.data.WeatherRepositoryImpl
 import com.prafullkumar.weatherforecastpro.domain.repository.WeatherRepository
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -31,7 +36,7 @@ class WeatherForecastPro : Application() {
                     WeatherRepositoryImpl()
                 }
                 viewModel { HomeWeatherViewModel(get()) }
-            })
+            }, exploreModule)
         }
     }
 }

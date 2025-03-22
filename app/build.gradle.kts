@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    // Kotlin serialization
+    id("com.google.devtools.ksp")
     id("org.jetbrains.kotlin.plugin.serialization")
 }
 
@@ -73,4 +73,10 @@ dependencies {
     // kotlin serialization
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.accompanist.permissions)
+
+    // room compose
+    implementation(libs.symbol.processing.api)
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
 }

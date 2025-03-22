@@ -1,5 +1,6 @@
-package com.prafullkumar.weatherforecastpro.data
+package com.prafullkumar.weatherforecastpro.app.home
 
+import com.prafullkumar.weatherforecastpro.data.WeatherApiService
 import com.prafullkumar.weatherforecastpro.data.dto.weatherResponse.WeatherResponse
 import com.prafullkumar.weatherforecastpro.domain.repository.WeatherRepository
 import com.prafullkumar.weatherforecastpro.utils.Resource
