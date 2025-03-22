@@ -11,7 +11,7 @@ import org.koin.dsl.module
 
 val exploreModule = module {
     viewModel { ExploreViewModel() }
-
+    viewModel { SearchViewModel(get()) }
     single<ExploreDatabase> {
         Room.databaseBuilder(
             androidContext(),

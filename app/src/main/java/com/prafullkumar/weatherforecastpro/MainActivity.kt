@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -41,16 +42,19 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
 import com.prafullkumar.weatherforecastpro.app.explore.ExploreScreen
 import com.prafullkumar.weatherforecastpro.app.explore.ExploreViewModel
+import com.prafullkumar.weatherforecastpro.app.explore.SearchScreen
 import com.prafullkumar.weatherforecastpro.app.home.DetailedWeatherScreen
 import com.prafullkumar.weatherforecastpro.app.home.HomeWeatherViewModel
 import com.prafullkumar.weatherforecastpro.ui.theme.WeatherForecastProTheme
 import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 class MainActivity : ComponentActivity() {
     private val LOCATION_PERMISSION_REQUEST_CODE = 1
@@ -152,13 +156,16 @@ fun App() {
         composable<Routes.SettingsScreen> {
             MainScreen(navController, Routes.SettingsScreen, viewModels)
         }
+        composable<Routes.SearchScreen> {
+            SearchScreen(koinViewModel { parametersOf(it.toRoute<Routes.SearchScreen>().query) }, navController)
+        }
     }
 }
 
 @Composable
 fun MainScreen(
     navController: NavController,
-    currentRoute: Routes,
+    currentRoute: Any,
     viewModels: MutableMap<Any, ViewModel>
 ) {
     Scaffold(Modifier.fillMaxSize(), bottomBar = {
@@ -183,11 +190,18 @@ fun MainScreen(
                     Routes.LocationSearch,
                     koinViewModel<ExploreViewModel>()
                 )
-                ExploreScreen(
-                    viewModels[Routes.LocationSearch] as ExploreViewModel,
-                    navController
-                )
+                Box(
+                    Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding),
+                ) {
+                    ExploreScreen(
+                        viewModels[Routes.LocationSearch] as ExploreViewModel,
+                        navController
+                    )
+                }
             }
+
             Routes.SettingsScreen -> SettingsScreen(innerPadding)
             Routes.Splash -> {
 
@@ -202,11 +216,10 @@ fun SettingsScreen(padding: PaddingValues) {
 }
 
 
-
 @Composable
 private fun BottomNavigationBar(
-    currentRoute: Routes,
-    onRouteSelected: (Routes) -> Unit
+    currentRoute: Any,
+    onRouteSelected: (Any) -> Unit
 ) {
     NavigationBar(
         modifier = Modifier

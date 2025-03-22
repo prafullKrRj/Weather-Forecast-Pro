@@ -16,4 +16,6 @@ sealed interface Routes {
     @Serializable
     data object SettingsScreen : Routes
 
+    @Serializable
+    data class SearchScreen(val query: String) : Routes
 }
